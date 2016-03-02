@@ -22,6 +22,9 @@ public class XmlParser implements Parser {
         this.source = readSource;
     }
 
+    /**
+     * analyzes file content and split it on elements
+    */
     private List<String> analyze(FileReadSource readSource) {
 
         String xmlString = readSource.read();
@@ -50,7 +53,7 @@ public class XmlParser implements Parser {
 
         Document document = new Document();
         List<String> parsedElements = analyze(source);
-        Stack<Element> tags = new Stack<Element>();
+        Stack<Element> openedTags = new Stack<Element>();
 
         Element root = null;
         Element element = new Element();
@@ -58,26 +61,26 @@ public class XmlParser implements Parser {
         for (String s: parsedElements) {
 
             if (s.charAt(0) != '<') {
-                tags.peek().setText(new Text(s));
+                openedTags.peek().setText(new Text(s));
             }
              else if ( (s.charAt(0) == '<') && (s.charAt(1) != '/') ) {
 
                 element = new Element(s);
-                tags.add(element);
+                openedTags.add(element);
 
                 if (root == null)
-                    root = (tags.peek());
+                    root = (openedTags.peek());
 
              }
 
                else if ((s.charAt(0) == '<') && (s.charAt(1) == '/')) {
 
-                if ((tags.size() - 2) >= 0) {
-                    tags.get(tags.size() - 2).addChildElement(tags.peek());
+                if ((openedTags.size() - 2) >= 0) {
+                    openedTags.get(openedTags.size() - 2).addChildElement(openedTags.peek());
                 }
                 else
-                    tags.get(tags.size() - 1).addChildElement(tags.peek());
-                  tags.pop();
+                    openedTags.get(openedTags.size() - 1).addChildElement(openedTags.peek());
+                  openedTags.pop();
 
                 }
         }
