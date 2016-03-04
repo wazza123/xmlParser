@@ -33,7 +33,8 @@ public class FileReadSource implements ReadSource {
         try {
             while ( ( c = fileInputStream.read() ) != -1) {
 
-                charsFromFile.append((char) c);
+                if (c != '\r' && c != '\n')
+                   charsFromFile.append((char) c);
             }
         } catch (IOException e) {
             e.printStackTrace();

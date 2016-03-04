@@ -7,7 +7,7 @@ import java.util.List;
 public class Element extends Node {
 
     private String name;
-    private Attribute attribute;
+    private List<Attribute> attributes;
     private Text text;
     private List<Element> elements = new ArrayList<Element>();
 
@@ -18,8 +18,8 @@ public class Element extends Node {
         this.name = name;
     }
 
-    public Attribute getAttribute() {
-        return attribute;
+    public List<Attribute> getAttributes() {
+        return attributes;
     }
 
     public String getName() {
@@ -27,7 +27,11 @@ public class Element extends Node {
     }
 
     public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
+
+        if (attributes == null)
+            attributes = new ArrayList<Attribute>();
+
+        this.attributes.add(attribute);
     }
 
     public void setName(String name) {

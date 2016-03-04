@@ -1,15 +1,14 @@
 package com.epam.service.parser.impl;
 
 
+import com.epam.entity.Attribute;
 import com.epam.entity.Document;
 import com.epam.entity.Element;
 import com.epam.entity.Text;
 import com.epam.service.parser.Parser;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,10 +21,10 @@ public class XmlParser implements Parser {
         this.source = readSource;
     }
 
-    /**
-     * analyzes file content and split it on elements
+    /*
+      analyzes file content and split it on elements
     */
-    private List<String> analyze(FileReadSource readSource) {
+    private List<String> split(FileReadSource readSource) {
 
         String xmlString = readSource.read();
         StringBuilder stringBuilder = new StringBuilder(xmlString);
@@ -46,17 +45,61 @@ public class XmlParser implements Parser {
             parsedFile.add(matcher.group());
             previousEnd = matcher.end();
         }
-      return parsedFile;
+
+      return removeTabulation(parsedFile);
+    }
+
+    private List<String> removeTabulation(List<String> list) {
+
+        List<String> l = list;
+
+        for (int i = 0; i < l.size(); i++) {
+
+            String s = l.get(i);
+            l.remove(i);
+            l.add(i, s.replaceAll("  ", "").trim());
+        }
+
+        for (int i = 0; i < l.size(); i++) {
+
+            if (l.get(i).equals(""))
+                l.remove(i);
+        }
+       return l;
+    }
+
+    /*
+      parses tag string and create element with name and attributes
+     */
+    private Element createElement(Element element, String tag) {
+
+        Element el = element;
+
+        //stores element name attributes name and value in order they exists in tag
+        Queue<String> elementProperties = new ArrayDeque<String>();
+        String a[] = tag.split("[<\\s='\">]");
+
+        for (String s : a )
+        if (!s.equals(""))
+            elementProperties.add(s);
+
+        element.setName(elementProperties.remove());
+
+        while (!elementProperties.isEmpty()){
+
+            el.setAttribute(new Attribute(elementProperties.remove(),elementProperties.remove()));
+        }
+
+        return el;
     }
 
     private Document buildDOMTree() throws IOException {
 
         Document document = new Document();
-        List<String> parsedElements = analyze(source);
+        List<String> parsedElements = split(source);
         Stack<Element> openedTags = new Stack<Element>();
 
         Element root = null;
-        Element element = new Element();
 
         for (String s: parsedElements) {
 
@@ -65,8 +108,7 @@ public class XmlParser implements Parser {
             }
              else if ( (s.charAt(0) == '<') && (s.charAt(1) != '/') ) {
 
-                element = new Element(s);
-                openedTags.add(element);
+                openedTags.add(createElement( new Element() , s ));
 
                 if (root == null)
                     root = (openedTags.peek());
@@ -75,12 +117,11 @@ public class XmlParser implements Parser {
 
                else if ((s.charAt(0) == '<') && (s.charAt(1) == '/')) {
 
-                if ((openedTags.size() - 2) >= 0) {
+                if (openedTags.size() > 1) {
                     openedTags.get(openedTags.size() - 2).addChildElement(openedTags.peek());
                 }
-                else
-                    openedTags.get(openedTags.size() - 1).addChildElement(openedTags.peek());
-                  openedTags.pop();
+
+                openedTags.pop();
 
                 }
         }
