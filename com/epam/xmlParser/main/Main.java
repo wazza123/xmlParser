@@ -3,17 +3,17 @@ package com.epam.xmlParser.main;
 import com.epam.xmlParser.entity.Attribute;
 import com.epam.xmlParser.entity.Document;
 import com.epam.xmlParser.entity.Element;
+import com.epam.xmlParser.service.parser.exeption.ReadSourceException;
 import com.epam.xmlParser.service.parser.impl.FileReadSource;
 import com.epam.xmlParser.service.parser.impl.XmlParser;
 
 import java.io.File;
-import java.io.IOException;
 
 public class Main {
 
     public static void showDOMTreeStructure(Element root) {
 
-       System.out.print("<" + root.getName());
+        System.out.print("<" + root.getName());
 
         if (root.getAttributes() != null) {
 
@@ -26,7 +26,7 @@ public class Main {
         System.out.println(">");
 
         if (root.getText() != null)
-        System.out.println(root.getText());
+            System.out.println(root.getText());
 
         for (Element elements : root.getChildElements()) {
 
@@ -35,24 +35,34 @@ public class Main {
         System.out.println("</" + root.getName() + ">");
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        File file = new File("C:\\Users\\home\\Desktop\\pom.xml");
-        Document document = null;
+        File file = new File("C:\\Users\\Администратор\\Desktop\\pom.xml");
+        Document document;
+        FileReadSource readSource;
 
-        if (file.exists()) {
-            FileReadSource readSource = new FileReadSource(file);
-            XmlParser parser = new XmlParser(readSource);
+        try {
+
+            readSource = new FileReadSource(file);
+        } catch (ReadSourceException e) {
+
+            System.err.println("file " + file.getAbsolutePath() + " does not exist");
+            e.printStackTrace();
+            return;
+        }
+
+        XmlParser parser = new XmlParser(readSource);
+        try {
+
             document = parser.parse();
+        } catch (ReadSourceException e) {
+            e.printStackTrace();
+            return;
         }
 
-        else {
-
-            System.out.println("file does not exist");
-        }
 
         if (document != null)
-        showDOMTreeStructure(document.getRootElement());
+            showDOMTreeStructure(document.getRootElement());
 
 
     }

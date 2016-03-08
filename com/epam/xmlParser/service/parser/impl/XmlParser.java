@@ -6,6 +6,7 @@ import com.epam.xmlParser.entity.Document;
 import com.epam.xmlParser.entity.Element;
 import com.epam.xmlParser.entity.Text;
 import com.epam.xmlParser.service.parser.Parser;
+import com.epam.xmlParser.service.parser.exeption.ReadSourceException;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -19,7 +20,6 @@ public class XmlParser implements Parser {
 
         this.source = readSource;
     }
-
 
     private String removeTabulation(String string) {
 
@@ -53,7 +53,11 @@ public class XmlParser implements Parser {
         return element;
     }
 
-    private Document buildDOMTree() {
+    private Document buildDOMTree() throws ReadSourceException {
+
+        final String BLANK_STRING = "";
+        final char OPENED_TAG_BRACKET = '<';
+        final char SLASH = '/';
 
         Document document = new Document();
         Stack<Element> openedTags = new Stack<Element>();
@@ -63,20 +67,22 @@ public class XmlParser implements Parser {
 
             String s = removeTabulation(source.nextString());
 
-            if (!s.equals("")) {
+            if (!s.equals(BLANK_STRING)) {
 
-                if (s.charAt(0) != '<') {
+                if (s.charAt(0) != OPENED_TAG_BRACKET) {
 
                     openedTags.peek().setText(new Text(s));
 
-                } else if ((s.charAt(0) == '<') && (s.charAt(1) != '/')) {
+                } else if ((s.charAt(0) == OPENED_TAG_BRACKET) && (s.charAt(1) != SLASH)) {
 
                     openedTags.add(createElement(new Element(), s));
 
-                    if (root == null)
-                        root = (openedTags.peek());
+                    if (root == null) {
 
-                } else if ((s.charAt(0) == '<') && (s.charAt(1) == '/')) {
+                        root = (openedTags.peek());
+                    }
+
+                } else if ((s.charAt(0) == OPENED_TAG_BRACKET) && (s.charAt(1) == SLASH)) {
 
                     if (openedTags.size() > 1) {
 
@@ -87,14 +93,16 @@ public class XmlParser implements Parser {
 
                 }
             }
+
         }
 
+        source.close();
         document.setRootElement(root);
         return document;
     }
 
     @Override
-    public Document parse() {
+    public Document parse() throws ReadSourceException {
 
         return buildDOMTree();
     }

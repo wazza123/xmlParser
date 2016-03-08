@@ -2,27 +2,28 @@ package com.epam.xmlParser.service.parser.impl;
 
 
 import com.epam.xmlParser.service.parser.ReadSource;
+import com.epam.xmlParser.service.parser.exeption.ReadSourceException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class FileReadSource implements ReadSource {
 
     private File sourceFile;
     private FileInputStream fileInputStream;
-    private boolean isEndOfFile = false;
     private int nextChar = 0;
 
-    public FileReadSource(File sourceFile) {
+    public FileReadSource(File sourceFile) throws ReadSourceException {
 
         this.sourceFile = sourceFile;
     }
 
-    private void openInputStream() {}
+    private void openInputStream() {
+    }
 
-    public String nextString() {
+    @Override
+    public String nextString() throws ReadSourceException {
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -34,32 +35,37 @@ public class FileReadSource implements ReadSource {
         if (fileInputStream == null) {
 
             try {
+
                 fileInputStream = new FileInputStream(sourceFile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            } catch (IOException e) {
+
+                System.err.println("file " + sourceFile.getAbsolutePath() + " does not exist");
+                throw new ReadSourceException(e);
+
             }
         }
-            try {
 
-                while ( (nextChar = fileInputStream.read()) != -1) {
+        try {
 
-                    if (nextChar == '>') {
+            while ((nextChar = fileInputStream.read()) != -1) {
 
-                        stringBuilder.append((char) nextChar);
-                        break;
-                    }
-
-                    else if (nextChar == '<') {
-
-                        break;
-                    }
+                if (nextChar == '>') {
 
                     stringBuilder.append((char) nextChar);
+                    break;
+                } else if (nextChar == '<') {
+
+                    break;
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                stringBuilder.append((char) nextChar);
             }
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            throw new ReadSourceException(e);
+        }
 
         return stringBuilder.toString();
     }
@@ -74,8 +80,8 @@ public class FileReadSource implements ReadSource {
         try {
 
             fileInputStream.close();
-
         } catch (IOException e) {
+
             e.printStackTrace();
         }
     }
