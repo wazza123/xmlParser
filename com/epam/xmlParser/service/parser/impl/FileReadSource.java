@@ -14,22 +14,23 @@ public class FileReadSource implements ReadSource {
     private FileInputStream fileInputStream;
     private int nextChar = 0;
 
-    public FileReadSource(File sourceFile) throws ReadSourceException {
+    public FileReadSource(File sourceFile) {
 
         this.sourceFile = sourceFile;
-    }
-
-    private void openInputStream() {
     }
 
     @Override
     public String nextString() throws ReadSourceException {
 
-        StringBuilder stringBuilder = new StringBuilder();
+        final char OPEN_TAG_BRACKET = '<';
+        final char CLOSED_TAG_BRACKET = '>';
+        final int EOF = -1;
 
-        if (nextChar == '<') {
+        StringBuilder readChars = new StringBuilder();
 
-            stringBuilder.append((char) nextChar);
+        if (nextChar == OPEN_TAG_BRACKET) {
+
+            readChars.append((char) nextChar);
         }
 
         if (fileInputStream == null) {
@@ -37,37 +38,37 @@ public class FileReadSource implements ReadSource {
             try {
 
                 fileInputStream = new FileInputStream(sourceFile);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
 
-                System.err.println("file " + sourceFile.getAbsolutePath() + " does not exist");
                 throw new ReadSourceException(e);
-
             }
         }
 
         try {
 
-            while ((nextChar = fileInputStream.read()) != -1) {
+            while ((nextChar = fileInputStream.read()) != EOF) {
 
-                if (nextChar == '>') {
+                if (nextChar == CLOSED_TAG_BRACKET) {
 
-                    stringBuilder.append((char) nextChar);
+                    readChars.append((char) nextChar);
                     break;
-                } else if (nextChar == '<') {
+                }
+                else if (nextChar == OPEN_TAG_BRACKET) {
 
                     break;
                 }
 
-                stringBuilder.append((char) nextChar);
+                readChars.append((char) nextChar);
             }
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
 
-            e.printStackTrace();
             throw new ReadSourceException(e);
         }
 
-        return stringBuilder.toString();
+        return readChars.toString();
     }
 
     public boolean hasNext() {
@@ -80,7 +81,8 @@ public class FileReadSource implements ReadSource {
         try {
 
             fileInputStream.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
 
             e.printStackTrace();
         }

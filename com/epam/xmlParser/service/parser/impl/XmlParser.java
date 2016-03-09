@@ -58,6 +58,7 @@ public class XmlParser implements Parser {
         final String BLANK_STRING = "";
         final char OPENED_TAG_BRACKET = '<';
         final char SLASH = '/';
+        final String XML_DECLARATION_BRACKET = "<?";
 
         Document document = new Document();
         Stack<Element> openedTags = new Stack<Element>();
@@ -67,13 +68,22 @@ public class XmlParser implements Parser {
 
             String s = removeTabulation(source.nextString());
 
+            //Ignore xml declaration
+            if (!s.equals("")) {
+
+                if (s.substring(0, 2).equals(XML_DECLARATION_BRACKET)) {
+
+                    continue;
+                }
+            }
+
             if (!s.equals(BLANK_STRING)) {
 
                 if (s.charAt(0) != OPENED_TAG_BRACKET) {
 
                     openedTags.peek().setText(new Text(s));
-
-                } else if ((s.charAt(0) == OPENED_TAG_BRACKET) && (s.charAt(1) != SLASH)) {
+                }
+                else if ((s.charAt(0) == OPENED_TAG_BRACKET) && (s.charAt(1) != SLASH)) {
 
                     openedTags.add(createElement(new Element(), s));
 
@@ -82,7 +92,8 @@ public class XmlParser implements Parser {
                         root = (openedTags.peek());
                     }
 
-                } else if ((s.charAt(0) == OPENED_TAG_BRACKET) && (s.charAt(1) == SLASH)) {
+                }
+                else if ((s.charAt(0) == OPENED_TAG_BRACKET) && (s.charAt(1) == SLASH)) {
 
                     if (openedTags.size() > 1) {
 
@@ -90,7 +101,6 @@ public class XmlParser implements Parser {
                     }
 
                     openedTags.pop();
-
                 }
             }
 

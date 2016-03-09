@@ -25,8 +25,10 @@ public class Main {
 
         System.out.println(">");
 
-        if (root.getText() != null)
+        if (root.getText() != null) {
+
             System.out.println(root.getText());
+        }
 
         for (Element elements : root.getChildElements()) {
 
@@ -37,33 +39,25 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File file = new File("C:\\Users\\Администратор\\Desktop\\pom.xml");
+        File file = new File("C:\\Users\\Администратор\\Desktop\\ddd.xml");
         Document document;
         FileReadSource readSource;
-
-        try {
-
-            readSource = new FileReadSource(file);
-        } catch (ReadSourceException e) {
-
-            System.err.println("file " + file.getAbsolutePath() + " does not exist");
-            e.printStackTrace();
-            return;
-        }
-
+        readSource = new FileReadSource(file);
         XmlParser parser = new XmlParser(readSource);
+
         try {
 
             document = parser.parse();
-        } catch (ReadSourceException e) {
+        }
+        catch (ReadSourceException e) {
+
             e.printStackTrace();
             return;
         }
 
+        if (document != null) {
 
-        if (document != null)
             showDOMTreeStructure(document.getRootElement());
-
-
+        }
     }
 }
