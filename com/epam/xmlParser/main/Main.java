@@ -3,7 +3,7 @@ package com.epam.xmlParser.main;
 import com.epam.xmlParser.entity.Attribute;
 import com.epam.xmlParser.entity.Document;
 import com.epam.xmlParser.entity.Element;
-import com.epam.xmlParser.service.exception.ParserException;
+import com.epam.xmlParser.service.parser.exception.ParserException;
 import com.epam.xmlParser.service.parser.impl.FileReadSource;
 import com.epam.xmlParser.service.parser.impl.XmlParser;
 

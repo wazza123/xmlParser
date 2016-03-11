@@ -1,7 +1,7 @@
 package com.epam.xmlParser.service.parser.impl;
 
 
-import com.epam.xmlParser.service.exception.ReadSourceException;
+import com.epam.xmlParser.service.parser.exception.ReadSourceException;
 import com.epam.xmlParser.service.parser.ReadSource;
 
 import java.io.File;

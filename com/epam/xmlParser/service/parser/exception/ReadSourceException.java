@@ -1,4 +1,4 @@
-package com.epam.xmlParser.service.exception;
+package com.epam.xmlParser.service.parser.exception;
 
 
 import java.io.IOException;

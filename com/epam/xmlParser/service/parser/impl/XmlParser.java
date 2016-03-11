@@ -5,8 +5,8 @@ import com.epam.xmlParser.entity.Attribute;
 import com.epam.xmlParser.entity.Document;
 import com.epam.xmlParser.entity.Element;
 import com.epam.xmlParser.entity.Text;
-import com.epam.xmlParser.service.exception.ParserException;
-import com.epam.xmlParser.service.exception.ReadSourceException;
+import com.epam.xmlParser.service.parser.exception.ParserException;
+import com.epam.xmlParser.service.parser.exception.ReadSourceException;
 import com.epam.xmlParser.service.parser.Parser;
 
 import java.util.ArrayDeque;
