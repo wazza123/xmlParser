@@ -1,7 +1,7 @@
 package com.epam.xmlParser.service.parser;
 
 
-import com.epam.xmlParser.service.parser.exeption.ReadSourceException;
+import com.epam.xmlParser.service.exception.ReadSourceException;
 
 public interface ReadSource {
 

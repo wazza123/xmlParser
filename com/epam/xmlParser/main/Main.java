@@ -3,7 +3,7 @@ package com.epam.xmlParser.main;
 import com.epam.xmlParser.entity.Attribute;
 import com.epam.xmlParser.entity.Document;
 import com.epam.xmlParser.entity.Element;
-import com.epam.xmlParser.service.parser.exeption.ReadSourceException;
+import com.epam.xmlParser.service.exception.ParserException;
 import com.epam.xmlParser.service.parser.impl.FileReadSource;
 import com.epam.xmlParser.service.parser.impl.XmlParser;
 
@@ -39,7 +39,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File file = new File("C:\\Users\\Администратор\\Desktop\\ddd.xml");
+        File file = new File("nodes.xml");
         Document document;
         FileReadSource readSource;
         readSource = new FileReadSource(file);
@@ -49,7 +49,7 @@ public class Main {
 
             document = parser.parse();
         }
-        catch (ReadSourceException e) {
+        catch (ParserException e) {
 
             e.printStackTrace();
             return;

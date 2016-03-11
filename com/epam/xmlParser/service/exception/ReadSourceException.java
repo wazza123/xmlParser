@@ -1,4 +1,4 @@
-package com.epam.xmlParser.service.parser.exeption;
+package com.epam.xmlParser.service.exception;
 
 
 import java.io.IOException;
@@ -15,6 +15,7 @@ public class ReadSourceException extends Exception {
     @Override
     public void printStackTrace() {
 
+        super.printStackTrace();
         exception.printStackTrace();
     }
 }

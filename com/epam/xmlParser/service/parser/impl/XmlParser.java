@@ -5,12 +5,12 @@ import com.epam.xmlParser.entity.Attribute;
 import com.epam.xmlParser.entity.Document;
 import com.epam.xmlParser.entity.Element;
 import com.epam.xmlParser.entity.Text;
+import com.epam.xmlParser.service.exception.ParserException;
+import com.epam.xmlParser.service.exception.ReadSourceException;
 import com.epam.xmlParser.service.parser.Parser;
-import com.epam.xmlParser.service.parser.exeption.ReadSourceException;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.Stack;
 
 public class XmlParser implements Parser {
 
@@ -31,11 +31,11 @@ public class XmlParser implements Parser {
      */
     private Element createElement(Element element, String tag) {
 
-        //stores element name attributes name and value in order they exists in tag
+        //stores element name, attributes name and value, in order they exists in tag
         Queue<String> elementProperties = new ArrayDeque<String>();
-        String a[] = tag.split("[<\\s='\">]");
+        String parsedTag[] = tag.split("[<\\s='\">]");
 
-        for (String s : a) {
+        for (String s : parsedTag) {
 
             if (!s.equals("")) {
 
@@ -61,7 +61,7 @@ public class XmlParser implements Parser {
         final String XML_DECLARATION_BRACKET = "<?";
 
         Document document = new Document();
-        Stack<Element> openedTags = new Stack<Element>();
+        ArrayDeque<Element> openedTags = new ArrayDeque<Element>();
         Element root = null;
 
         while (source.hasNext()) {
@@ -69,7 +69,7 @@ public class XmlParser implements Parser {
             String s = removeTabulation(source.nextString());
 
             //Ignore xml declaration
-            if (!s.equals("")) {
+            if (!s.equals(BLANK_STRING)) {
 
                 if (s.substring(0, 2).equals(XML_DECLARATION_BRACKET)) {
 
@@ -81,15 +81,15 @@ public class XmlParser implements Parser {
 
                 if (s.charAt(0) != OPENED_TAG_BRACKET) {
 
-                    openedTags.peek().setText(new Text(s));
+                    openedTags.peekLast().setText(new Text(s));
                 }
                 else if ((s.charAt(0) == OPENED_TAG_BRACKET) && (s.charAt(1) != SLASH)) {
 
-                    openedTags.add(createElement(new Element(), s));
+                    openedTags.addLast(createElement(new Element(), s));
 
                     if (root == null) {
 
-                        root = (openedTags.peek());
+                        root = (openedTags.peekLast());
                     }
 
                 }
@@ -97,10 +97,9 @@ public class XmlParser implements Parser {
 
                     if (openedTags.size() > 1) {
 
-                        openedTags.get(openedTags.size() - 2).addChildElement(openedTags.peek());
+                        Element el = openedTags.removeLast();
+                        openedTags.peekLast().addChildElement(el);
                     }
-
-                    openedTags.pop();
                 }
             }
 
@@ -112,8 +111,14 @@ public class XmlParser implements Parser {
     }
 
     @Override
-    public Document parse() throws ReadSourceException {
+    public Document parse() throws ParserException {
 
-        return buildDOMTree();
+        try {
+
+            return buildDOMTree();
+        }
+        catch (ReadSourceException e) {
+            throw new ParserException(e);
+        }
     }
 }
