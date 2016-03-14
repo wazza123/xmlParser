@@ -28,11 +28,6 @@ public class FileReadSource implements ReadSource {
 
         StringBuilder readChars = new StringBuilder();
 
-        if (nextChar == OPEN_TAG_BRACKET) {
-
-            readChars.append((char) nextChar);
-        }
-
         if (fileInputStream == null) {
 
             try {
@@ -43,6 +38,11 @@ public class FileReadSource implements ReadSource {
 
                 throw new ReadSourceException(e);
             }
+        }
+
+        if (nextChar == OPEN_TAG_BRACKET) {
+
+            readChars.append((char) nextChar);
         }
 
         try {

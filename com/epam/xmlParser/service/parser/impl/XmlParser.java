@@ -97,8 +97,8 @@ public class XmlParser implements Parser {
 
                     if (openedTags.size() > 1) {
 
-                        Element el = openedTags.removeLast();
-                        openedTags.peekLast().addChildElement(el);
+                        Element element = openedTags.removeLast();
+                        openedTags.peekLast().addChildElement(element);
                     }
                 }
             }
@@ -118,6 +118,7 @@ public class XmlParser implements Parser {
             return buildDOMTree();
         }
         catch (ReadSourceException e) {
+
             throw new ParserException(e);
         }
     }
