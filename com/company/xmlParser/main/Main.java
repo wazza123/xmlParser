@@ -1,11 +1,12 @@
-package com.epam.xmlParser.main;
+package com.company.xmlParser.main;
 
-import com.epam.xmlParser.entity.Attribute;
-import com.epam.xmlParser.entity.Document;
-import com.epam.xmlParser.entity.Element;
-import com.epam.xmlParser.service.parser.exception.ParserException;
-import com.epam.xmlParser.service.parser.impl.FileReadSource;
-import com.epam.xmlParser.service.parser.impl.XmlParser;
+import com.company.xmlParser.entity.Attribute;
+import com.company.xmlParser.entity.Document;
+import com.company.xmlParser.entity.Element;
+import com.company.xmlParser.service.parser.Parser;
+import com.company.xmlParser.service.parser.exception.ParserException;
+import com.company.xmlParser.service.parser.impl.FileReadSource;
+import com.company.xmlParser.service.parser.impl.XmlParser;
 
 import java.io.File;
 
@@ -43,7 +44,7 @@ public class Main {
         Document document;
         FileReadSource readSource;
         readSource = new FileReadSource(file);
-        XmlParser parser = new XmlParser(readSource);
+        Parser parser = new XmlParser(readSource);
 
         try {
 

@@ -1,8 +1,8 @@
-package com.epam.xmlParser.service.parser.impl;
+package com.company.xmlParser.service.parser.impl;
 
 
-import com.epam.xmlParser.service.parser.exception.ReadSourceException;
-import com.epam.xmlParser.service.parser.ReadSource;
+import com.company.xmlParser.service.parser.ReadSource;
+import com.company.xmlParser.service.parser.exception.ReadSourceException;
 
 import java.io.File;
 import java.io.FileInputStream;

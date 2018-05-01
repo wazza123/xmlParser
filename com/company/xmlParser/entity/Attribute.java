@@ -1,4 +1,4 @@
-package com.epam.xmlParser.entity;
+package com.company.xmlParser.entity;
 
 
 public class Attribute extends Node {

@@ -1,4 +1,4 @@
-package com.epam.xmlParser.entity;
+package com.company.xmlParser.entity;
 
 import java.util.ArrayList;
 import java.util.List;

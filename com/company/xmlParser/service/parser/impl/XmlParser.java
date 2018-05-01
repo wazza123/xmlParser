@@ -1,13 +1,13 @@
-package com.epam.xmlParser.service.parser.impl;
+package com.company.xmlParser.service.parser.impl;
 
 
-import com.epam.xmlParser.entity.Attribute;
-import com.epam.xmlParser.entity.Document;
-import com.epam.xmlParser.entity.Element;
-import com.epam.xmlParser.entity.Text;
-import com.epam.xmlParser.service.parser.exception.ParserException;
-import com.epam.xmlParser.service.parser.exception.ReadSourceException;
-import com.epam.xmlParser.service.parser.Parser;
+import com.company.xmlParser.entity.Element;
+import com.company.xmlParser.service.parser.exception.ReadSourceException;
+import com.company.xmlParser.entity.Attribute;
+import com.company.xmlParser.entity.Document;
+import com.company.xmlParser.entity.Text;
+import com.company.xmlParser.service.parser.exception.ParserException;
+import com.company.xmlParser.service.parser.Parser;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
